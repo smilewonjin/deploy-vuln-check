@@ -1,0 +1,13 @@
+- name: Find result directory
+  find:
+    paths: /tmp/vuln_check
+    patterns: "*RESULT.txt"
+    recurse: yes
+  register: result_files
+
+- name: Fetch results
+  fetch:
+    src: "{{ item.path }}"
+    dest: "result/raw/{{ inventory_hostname }}/"
+    flat: yes
+  loop: "{{ result_files.files }}"
