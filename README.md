@@ -20,7 +20,7 @@ git push -u origin main
 이미 작업 중이던 로컬 Git 프로젝트가 있다면 원격 저장소 주소만 연결하여 푸시합니다.
 
 ```bash
-git remote add origin https://github.com/smilewonjin/azure.git
+git remote add origin  https://github.com/smilewonjin/deploy-vuln-check.git
 git branch -M main
 git push -u origin main
 ```
