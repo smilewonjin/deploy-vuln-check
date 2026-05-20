@@ -1,0 +1,5 @@
+- hosts: linux
+  become: yes
+
+  roles:
+    - linux_vuln_check

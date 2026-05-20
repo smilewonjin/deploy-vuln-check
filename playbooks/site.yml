@@ -1,0 +1,3 @@
+- import_playbook: gather_os.yml
+- import_playbook: run_vuln_check.yml
+- import_playbook: collect_results.yml

@@ -1,0 +1,13 @@
+- name: Create work directory
+  file:
+    path: /tmp/vuln_check
+    state: directory
+    mode: '0755'
+
+- name: Upload OS specific script
+  copy:
+    src: >-
+      {{ os_family_custom }}/
+      {{ os_family_custom | upper }}{{ os_major_version }}/LINUX_2026.sh
+    dest: /tmp/vuln_check/LINUX_2026.sh
+    mode: '0755'

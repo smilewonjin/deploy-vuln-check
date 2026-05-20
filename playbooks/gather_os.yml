@@ -1,0 +1,9 @@
+- hosts: linux
+  gather_facts: yes
+
+  tasks:
+    - name: Print OS Info
+      debug:
+        msg:
+          - "{{ ansible_distribution }}"
+          - "{{ ansible_distribution_major_version }}"

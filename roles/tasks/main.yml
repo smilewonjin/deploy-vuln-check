@@ -1,0 +1,14 @@
+- name: OS Detect
+  include_tasks: detect_os.yml
+
+- name: Precheck
+  include_tasks: precheck.yml
+
+- name: Deploy Script
+  include_tasks: deploy_script.yml
+
+- name: Execute Script
+  include_tasks: execute.yml
+
+- name: Collect Results
+  include_tasks: collect.yml
