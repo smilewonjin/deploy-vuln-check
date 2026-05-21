@@ -1,24 +1,24 @@
 - name: Find result directories
   ansible.builtin.find:
-    paths: 
-      - "/root"                    # 🔍 1. 루트 홈 디렉토리 검사
-      - "/home"                    # 🔍 2. 일반 유저 홈 디렉토리 검사
-      - "/tmp"                     # 🔍 3. 임시 디렉토리 검사
+    paths: "{{ ansible_env.HOME }}"
     file_type: directory
-    patterns: "*vuln*"             # 💡 폴더 이름에 'vuln'이 들어가는 모든 디렉토리 검색 (환경에 맞게 'result*' 등으로 변경 가능)
-    recurse: yes                   # 하위 디렉토리까지 깊숙이 찾기
+    patterns: "*{{ inventory_hostname }}*" # 💡 예: *vm-az-kr-mgmt-netbox-01* 패턴과 일치하는 폴더를 찾습니다.
+    recurse: no # 홈 디렉토리 바로 아래에 생성되므로 하위 탐색은 꺼둡니다.
   register: result_dirs
 
 - name: Compress result directory
   ansible.builtin.shell: |
     tar -czf /tmp/{{ inventory_hostname }}.tar.gz -C "{{ item.path | dirname }}" "{{ item.path | basename }}"
   loop: "{{ result_dirs.files }}"
+  when: result_dirs.matched > 0
 
 - name: Fetch archive to AWX
   ansible.builtin.fetch:
     src: "/tmp/{{ inventory_hostname }}.tar.gz"
     dest: "./result/"
     flat: yes
+  loop: "{{ result_dirs.files }}"
+  when: result_dirs.matched > 0
 
 - name: Upload archive to Nexus
   ansible.builtin.shell: |
@@ -26,3 +26,5 @@
     --upload-file "./result/{{ inventory_hostname }}.tar.gz" \
     "{{ nexus_url }}/{{ nexus_repository }}/{{ inventory_hostname }}/{{ inventory_hostname }}.tar.gz"
   delegate_to: localhost
+  loop: "{{ result_dirs.files }}"
+  when: result_dirs.matched > 0
