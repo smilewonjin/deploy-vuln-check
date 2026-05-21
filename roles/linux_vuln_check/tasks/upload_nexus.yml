@@ -33,7 +33,7 @@
   connection: local
   become: false
   ansible.builtin.shell: |
-    curl -k -u "{{ nexus_user }}:{{ nexus_password }}" \
+    curl --insecure --tlsv1.2 -u "{{ nexus_user }}:{{ nexus_password }}" \
       --upload-file "/tmp/result-{{ inventory_hostname }}-{{ archive_date }}.tar.gz" \
       "{{ nexus_url }}/{{ nexus_repository }}/result-{{ inventory_hostname }}-{{ archive_date }}.tar.gz"
   when: result_dirs.matched > 0
