@@ -1,0 +1,11 @@
+---
+ansible_user: azureuser
+# ansible_ssh_private_key_file: keys/private.pem
+ansible_ssh_pass: "Qwer1234!@#$"
+ansible_sudo_pass: "Qwer1234!@#$"
+ansible_become: yes
+
+nexus_url: "https://nexus.creverse.com/repository/raw-creverse-host"
+nexus_repository: "security_result"
+nexus_user: "infra"
+nexus_password: "Cre@2203"

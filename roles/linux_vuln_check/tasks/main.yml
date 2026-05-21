@@ -12,3 +12,6 @@
 
 - name: Collect Results
   include_tasks: collect.yml
+
+- name: Upload Results
+  include_tasks: upload_nexus.yml
