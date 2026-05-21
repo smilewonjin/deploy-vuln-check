@@ -1,11 +1,22 @@
-- name: Find result directories
-  ansible.builtin.find:
-    paths: "/tmp/vuln_check"
-    file_type: directory
-    patterns: "LINUX*"
-    recurse: yes
-  register: result_dirs
+- name: Create work directory
+  ansible.builtin.file:
+    path: /tmp/vuln_check
+    state: directory
+    mode: '0777'
 
-- name: Show result directories
+- name: Run vulnerability check
+  ansible.builtin.shell: |
+    cd /tmp/vuln_check
+
+    export HOME=/tmp/vuln_check
+    export Running_WebService=0
+
+    /tmp/vuln_check/LINUX_2026.sh
+  args:
+    executable: /bin/bash
+  register: vuln_result
+  ignore_errors: yes
+
+- name: Show script output
   ansible.builtin.debug:
-    var: result_dirs.files
+    var: vuln_result.stdout_lines
