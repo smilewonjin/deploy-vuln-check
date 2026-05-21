@@ -1,13 +1,11 @@
-- name: Find result directory
-  find:
-    paths: /tmp/vuln_check
-    patterns: "*RESULT.txt"
+- name: Find result directories
+  ansible.builtin.find:
+    paths: "/tmp/vuln_check"
+    file_type: directory
+    patterns: "LINUX*"
     recurse: yes
-  register: result_files
+  register: result_dirs
 
-- name: Fetch results
-  fetch:
-    src: "{{ item.path }}"
-    dest: "result/raw/{{ inventory_hostname }}/"
-    flat: yes
-  loop: "{{ result_files.files }}"
+- name: Show result directories
+  ansible.builtin.debug:
+    var: result_dirs.files

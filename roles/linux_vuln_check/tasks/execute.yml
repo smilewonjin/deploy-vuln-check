@@ -1,3 +1,9 @@
+- name: Create work directory
+  ansible.builtin.file:
+    path: /tmp/vuln_check
+    state: directory
+    mode: '0777'
+
 - name: Run vulnerability check
   shell: |
     export Running_WebService=0
