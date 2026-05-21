@@ -1,5 +1,5 @@
 - name: Compress result directory
-  community.general.archive: 
+  archive:
     path: "{{ item.path }}"
     dest: "/tmp/{{ inventory_hostname }}.tar.gz"
     format: gz
