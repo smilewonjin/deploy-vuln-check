@@ -2,9 +2,13 @@
   ansible.builtin.find:
     paths: "{{ ansible_env.HOME }}"
     file_type: directory
-    patterns: "*{{ inventory_hostname }}*" # 💡 예: *vm-az-kr-mgmt-netbox-01* 패턴과 일치하는 폴더를 찾습니다.
+    patterns: "LINUX*"
     recurse: no # 홈 디렉토리 바로 아래에 생성되므로 하위 탐색은 꺼둡니다.
   register: result_dirs
+
+- name: Show result directories
+  ansible.builtin.debug:
+    var: result_dirs.files
 
 - name: Compress result directory
   ansible.builtin.shell: |
