@@ -1,9 +1,13 @@
 - name: Find result directories
   ansible.builtin.find:
-    paths: "/path/to/search" # 🔍 실제 결과 디렉토리가 위치한 절대 경로로 수정하세요 (예: /var/log/vuln 등)
+    paths: 
+      - "/root"                    # 🔍 1. 루트 홈 디렉토리 검사
+      - "/home"                    # 🔍 2. 일반 유저 홈 디렉토리 검사
+      - "/tmp"                     # 🔍 3. 임시 디렉토리 검사
     file_type: directory
-    patterns: "result*"       # 🔍 찾고자 하는 디렉토리 이름 규칙이 있다면 수정하세요
-  register: result_dirs       # 💡 이 부분이 있어야 아래 태스크에서 'result_dirs'를 사용할 수 있습니다.
+    patterns: "*vuln*"             # 💡 폴더 이름에 'vuln'이 들어가는 모든 디렉토리 검색 (환경에 맞게 'result*' 등으로 변경 가능)
+    recurse: yes                   # 하위 디렉토리까지 깊숙이 찾기
+  register: result_dirs
 
 - name: Compress result directory
   ansible.builtin.shell: |
