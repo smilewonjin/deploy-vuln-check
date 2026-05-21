@@ -17,12 +17,6 @@
     export Running_WebService=0
     export FIND_CHECK=1
 
-    timeout 1800 /tmp/vuln_check/LINUX_2026.sh
+    /tmp/vuln_check/LINUX_2026.sh
   args:
     executable: /bin/bash
-  register: vuln_result
-  ignore_errors: yes
-
-- name: Show script stdout
-  ansible.builtin.debug:
-    var: vuln_result.stdout_lines
