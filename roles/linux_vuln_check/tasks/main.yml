@@ -1,8 +1,8 @@
 - name: OS Detect
   include_tasks: detect_os.yml
 
-- name: Precheck
-  include_tasks: precheck.yml
+#- name: Precheck
+#  include_tasks: precheck.yml
 
 - name: Deploy Script
   include_tasks: deploy_script.yml
