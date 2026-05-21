@@ -14,9 +14,29 @@
   become: true
   become_user: root
   ansible.builtin.shell: |
-    export Running_WebService=0
-    export FIND_CHECK=1
+    cd /tmp/vuln_check
 
-    /tmp/vuln_check/LINUX_2026.sh
+    printf '0\n1\n' | timeout 1800 ./LINUX_2026.sh \
+      > /tmp/vuln_check/run.log 2>&1
+
+    echo $? > /tmp/vuln_check/exit.code
   args:
     executable: /bin/bash
+
+- name: Show exit code
+  ansible.builtin.shell: |
+    cat /tmp/vuln_check/exit.code
+  register: exit_result
+
+- name: Print exit code
+  ansible.builtin.debug:
+    var: exit_result.stdout_lines
+
+- name: Show last 50 log lines
+  ansible.builtin.shell: |
+    tail -50 /tmp/vuln_check/run.log
+  register: log_result
+
+- name: Print log output
+  ansible.builtin.debug:
+    var: log_result.stdout_lines
