@@ -1,0 +1,13 @@
+- name: Compress result directory
+  community.general.archive: # 모듈명을 명확히 지정하는 것이 좋습니다.
+    path: "{{ item.path }}"
+    dest: "/tmp/{{ inventory_hostname }}.tar.gz"
+    format: gz
+  loop: "{{ result_dirs.files }}" 
+
+- name: Upload archive to Nexus
+  ansible.builtin.shell: |
+    curl -k -u "{{ nexus_user }}:{{ nexus_password }}" \
+    --upload-file "/tmp/{{ inventory_hostname }}.tar.gz" \
+    "{{ nexus_url }}/{{ nexus_repository }}/{{ inventory_hostname }}/{{ inventory_hostname }}.tar.gz"
+  delegate_to: localhost 
