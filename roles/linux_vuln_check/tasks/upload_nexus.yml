@@ -4,14 +4,14 @@
   loop: "{{ result_dirs.files }}"
 
 - name: Fetch archive to AWX
-  fetch:
+  ansible.builtin.fetch:
     src: "/tmp/{{ inventory_hostname }}.tar.gz"
     dest: "./result/"
-  flat: yes
+    flat: yes # fetch 밑으로 들여쓰기를 맞춰야 합니다.
 
 - name: Upload archive to Nexus
   ansible.builtin.shell: |
     curl -k -u "{{ nexus_user }}:{{ nexus_password }}" \
     --upload-file "./result/{{ inventory_hostname }}.tar.gz" \
     "{{ nexus_url }}/{{ nexus_repository }}/{{ inventory_hostname }}/{{ inventory_hostname }}.tar.gz"
-  delegate_to: localhost 
+  delegate_to: localhost
