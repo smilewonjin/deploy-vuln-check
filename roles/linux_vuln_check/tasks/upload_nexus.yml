@@ -30,6 +30,7 @@
   when: result_dirs.matched > 0
 
 - name: Upload archive to Nexus
+  become: false
   ansible.builtin.shell: |
     curl -k -u "{{ nexus_user }}:{{ nexus_password }}" \
     --upload-file "./result/result-{{ inventory_hostname }}-{{ archive_date }}.tar.gz" \
