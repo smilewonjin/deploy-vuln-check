@@ -1,3 +1,10 @@
+- name: Find result directories
+  ansible.builtin.find:
+    paths: "/path/to/search" # 🔍 실제 결과 디렉토리가 위치한 절대 경로로 수정하세요 (예: /var/log/vuln 등)
+    file_type: directory
+    patterns: "result*"       # 🔍 찾고자 하는 디렉토리 이름 규칙이 있다면 수정하세요
+  register: result_dirs       # 💡 이 부분이 있어야 아래 태스크에서 'result_dirs'를 사용할 수 있습니다.
+
 - name: Compress result directory
   ansible.builtin.shell: |
     tar -czf /tmp/{{ inventory_hostname }}.tar.gz -C "{{ item.path | dirname }}" "{{ item.path | basename }}"
@@ -7,7 +14,7 @@
   ansible.builtin.fetch:
     src: "/tmp/{{ inventory_hostname }}.tar.gz"
     dest: "./result/"
-    flat: yes # fetch 밑으로 들여쓰기를 맞춰야 합니다.
+    flat: yes
 
 - name: Upload archive to Nexus
   ansible.builtin.shell: |
