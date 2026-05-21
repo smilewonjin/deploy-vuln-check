@@ -1,9 +1,13 @@
+- name: Set archive date
+  ansible.builtin.set_fact:
+    archive_date: "{{ lookup('pipe', 'date +%Y%m%d') }}"
+
 - name: Find result directories
   ansible.builtin.find:
-    paths: "{{ ansible_env.HOME }}"
+    paths: "/tmp/vuln_check"
     file_type: directory
     patterns: "LINUX*"
-    recurse: no # 홈 디렉토리 바로 아래에 생성되므로 하위 탐색은 꺼둡니다.
+    recurse: yes
   register: result_dirs
 
 - name: Show result directories
@@ -12,23 +16,23 @@
 
 - name: Compress result directory
   ansible.builtin.shell: |
-    tar -czf /tmp/{{ inventory_hostname }}.tar.gz -C "{{ item.path | dirname }}" "{{ item.path | basename }}"
+    tar -czvf /tmp/result-{{ inventory_hostname }}-{{ archive_date }}.tar.gz \
+    -C "{{ item.path | dirname }}" \
+    "{{ item.path | basename }}"
   loop: "{{ result_dirs.files }}"
   when: result_dirs.matched > 0
 
 - name: Fetch archive to AWX
   ansible.builtin.fetch:
-    src: "/tmp/{{ inventory_hostname }}.tar.gz"
+    src: "/tmp/result-{{ inventory_hostname }}-{{ archive_date }}.tar.gz"
     dest: "./result/"
     flat: yes
-  loop: "{{ result_dirs.files }}"
   when: result_dirs.matched > 0
 
 - name: Upload archive to Nexus
   ansible.builtin.shell: |
     curl -k -u "{{ nexus_user }}:{{ nexus_password }}" \
-    --upload-file "./result/{{ inventory_hostname }}.tar.gz" \
-    "{{ nexus_url }}/{{ nexus_repository }}/{{ inventory_hostname }}/{{ inventory_hostname }}.tar.gz"
+    --upload-file "./result/result-{{ inventory_hostname }}-{{ archive_date }}.tar.gz" \
+    "{{ nexus_url }}/{{ nexus_repository }}/result-{{ inventory_hostname }}-{{ archive_date }}.tar.gz"
   delegate_to: localhost
-  loop: "{{ result_dirs.files }}"
   when: result_dirs.matched > 0
