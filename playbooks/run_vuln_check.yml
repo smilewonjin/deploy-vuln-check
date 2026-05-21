@@ -1,4 +1,4 @@
-- hosts: linux
+- hosts: azure-vm-linux
   become: yes
 
   roles:
