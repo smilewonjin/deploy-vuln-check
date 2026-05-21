@@ -1,9 +1,7 @@
 - name: Compress result directory
-  archive:
-    path: "{{ item.path }}"
-    dest: "/tmp/{{ inventory_hostname }}.tar.gz"
-    format: gz
-  loop: "{{ result_dirs.files }}" 
+  ansible.builtin.shell: |
+    tar -czf /tmp/{{ inventory_hostname }}.tar.gz -C "{{ item.path | dirname }}" "{{ item.path | basename }}"
+  loop: "{{ result_dirs.files }}"
 
 - name: Fetch archive to AWX
   fetch:
